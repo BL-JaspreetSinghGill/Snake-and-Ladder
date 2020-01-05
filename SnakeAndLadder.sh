@@ -31,12 +31,25 @@ optionCheck () {
 	esac;
 }
 
-snakeAndLadderMain () {
-	echo $player1;
-	dieValue=$(rollDie);
-	optionCheck $dieValue;
+checkForNegativeValue () {
+	value=$1;
 
-	echo "PLAYER 1 : " $player1;
+	if [[ $value -lt $START ]]
+	then
+		player1=$START;
+	fi;
+}
+
+snakeAndLadderMain () {
+	while [[ $player1 -lt $GOAL ]]
+	do
+		dieValue=$(rollDie);
+		optionCheck $dieValue;
+		checkForNegativeValue $player1;
+		echo "PLAYER 1 : " $player1;
+	done;
+
+	echo "PLAYER 1 VALUE : " $player1;
 }
 
 snakeAndLadderMain;
