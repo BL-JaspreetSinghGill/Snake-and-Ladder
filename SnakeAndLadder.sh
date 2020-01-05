@@ -12,21 +12,51 @@ getOption () {
 	echo $(( RANDOM%3 ));
 }
 
+checkForExactWinPos () {
+	val=$(( $player1+$dieValue ));
+
+	if [[ $val -gt $GOAL ]]
+	then
+		player1=$player1;
+	else
+		player1=$val;
+	fi;
+}
+
+noPlayOption () {
+	echo "NO PLAY";
+}
+
+ladderOption () {
+	echo "LADDER";
+	diffValue=$(( $GOAL-6 ));
+
+	if [ $player1 -gt $diffValue ]
+	then
+		checkForExactWinPos;
+	else
+		player1=$(( $player1+$dieValue ));
+	fi;
+}
+
+snakeOption () {
+	echo "SNAKE";
+	player1=$(( $player1-$dieValue ));
+}
+
 optionCheck () {
 	dieValue=$1;
 	result=$(getOption);
 
 	case $result in
 			0)
-				echo "NO PLAY";
+				noPlayOption;
 				;;
 			1)
-				echo "LADDER";
-				player1=$(( $player1+$dieValue ));
+				ladderOption;
 				;;
 			2)
-				echo "SNAKE";
-				player1=$(( $player1-$dieValue ));
+				snakeOption;
 				;;
 	esac;
 }
