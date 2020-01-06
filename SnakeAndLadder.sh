@@ -2,10 +2,14 @@
 
 START=0;
 GOAL=100;
+
 player1=$START;
+counter=1;
+
+declare -A player1Dictionary;
 
 rollDie () {
-	echo $(( RANDOM%6+1 ))
+	echo $(( RANDOM%6+1 ));
 }
 
 getOption () {
@@ -58,6 +62,9 @@ optionCheck () {
 			2)
 				snakeOption;
 				;;
+			*)
+				echo "INVALID OPTION";
+				;;
 	esac;
 }
 
@@ -76,10 +83,13 @@ snakeAndLadderMain () {
 		dieValue=$(rollDie);
 		optionCheck $dieValue;
 		checkForNegativeValue $player1;
-		echo "PLAYER 1 : " $player1;
+		player1Dictionary[$counter]="$dieValue""-""$result""-""$player1";
+		(( counter++ ));
 	done;
 
 	echo "PLAYER 1 VALUE : " $player1;
+	echo "DICTIONARY : " ${player1Dictionary[@]};
+	echo "NUMBER OF TIMES DICE ROLLED : " ${#player1Dictionary[@]};
 }
 
 snakeAndLadderMain;
