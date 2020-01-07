@@ -2,12 +2,7 @@
 
 START=0;
 GOAL=100;
-
-decideNumberOfPlayers () {
-	read -p "ENTER THE NUMBER OF PLAYERS : " NUMBER_OF_PLAYERS;
-
-	echo $NUMBER_OF_PLAYERS;
-}
+NUMBER_OF_PLAYERS=2;
 
 assigningValuesToPlayers () {
 	NUMBER_OF_PLAYERS=$1;
@@ -89,23 +84,27 @@ checkForNegativeValue () {
 	fi;
 }
 
+storeInDictionary () {
+	(( playerDictionary$p[$(( counter$p ))]="$dieValue""$result""$(( player$p ))" ));
+	(( counter$p=$((counter$p))+1 ));
+}
+
 singlePlayerGame () {
-	while [[ $(( player$p )) -lt $GOAL ]]
-	do
-		dieValue=$(rollDie);
-		optionCheck $dieValue;
-		checkForNegativeValue $(( player$p ));
-		(( playerDictionary$p[$(( counter$p ))]="$dieValue""$result""$(( player$p ))" ));
-		(( counter$p=$((counter$p))+1 ));
-	done;
+	dieValue=$(rollDie);
+	optionCheck $dieValue;
+	checkForNegativeValue $(( player$p ));
+	storeInDictionary;
 
 	echo "PLAYER $p VALUE : " $(( player$p ));
 	#echo "NUMBER OF TIMES DICE ROLLED : " ${#playerDictionary$p[@]};
 }
 
 multiPlayerGame () {
-	for (( p=1; p<=$NUMBER_OF_PLAYERS; p++ ))
+	while [[ $player1 -lt $GOAL && $player2 -lt $GOAL ]]
 	do
+		p=1;
+		singlePlayerGame;
+		p=2;
 		singlePlayerGame;
 	done;
 }
@@ -116,27 +115,18 @@ displayDictionaryElements () {
 }
 
 displayResult () {
-	min=10000000;
-	playerName=0;
+	echo "PLAYER 1 VALUE:  " $player1;
+   echo "PLAYER 2 VALUE:  " $player2;
 
-	if [ $NUMBER_OF_PLAYERS -eq 1 ]
+	if [[ $player1 -eq $GOAL ]]
 	then
 		echo "PLAYER 1 WIN";
 	else
-		for (( k=1; k<=$NUMBER_OF_PLAYERS; k++ )) {
-			if [[ $((counter$k)) -lt $min ]]
-			then
-				min=$((counter$k));
-				playerName=$k;
-			fi;
-		}
-
-		echo "PLAYER $playerName WIN";
+		echo "PLAYER 2 WIN";
 	fi;
 }
 
 snakeAndLadderMain () {
-	NUMBER_OF_PLAYERS=$(decideNumberOfPlayers);
 	assigningValuesToPlayers $NUMBER_OF_PLAYERS;
 
 	multiPlayerGame;
